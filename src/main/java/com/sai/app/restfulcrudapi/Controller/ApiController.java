@@ -52,14 +52,11 @@ public class ApiController {
     {
         File fileName = fileStorageService.storeFile(file);
 
-        System.out.println(fileName);
-
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/download/")
                 .path(fileName.getFileName())
                 .toUriString();
 
-        System.out.println((fileDownloadUri));
 
         return new Response(fileName.getFileName(), fileDownloadUri, file.getContentType(), file.getSize());
     }
