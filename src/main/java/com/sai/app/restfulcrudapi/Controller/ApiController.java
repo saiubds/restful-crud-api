@@ -106,15 +106,8 @@ public class ApiController {
         return "file "+ fileName.getFileName() +" saved";
     }
     @PostMapping(value = "/submit")
-    public String saveUser(@RequestParam("file") MultipartFile file){
-        File fileName = fileStorageService.storeFile(file);
-
-        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/download/")
-                .path(fileName.getFileName())
-                .toUriString();
-
-        fileRepo.save(fileName);
+    public String saveUser(@RequestBody User user){
+        userRepo.save(user);
         return "user saved...";
 
     }
