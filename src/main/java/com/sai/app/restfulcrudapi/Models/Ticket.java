@@ -1,13 +1,12 @@
 package com.sai.app.restfulcrudapi.Models;
 
 import jakarta.persistence.*;
-import jdk.jfr.DataAmount;
 
 @Entity
-//@Table(name="Users")
-public class User {
+@Table(name="Ticket")
+public class Ticket {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
 
     @Column
@@ -18,13 +17,13 @@ public class User {
     @Column(columnDefinition = "BLOB")
     private byte[] data;
     @Column
-    private String firstName;
+    private String fileDescription;
     @Column
-    private String lastName;
+    private String dateOfUpload;
     @Column
     private int age;
     @Column
-    private String occupation;
+    private String reportDescription;
 
 
 
@@ -36,20 +35,20 @@ public class User {
         this.id = id;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getFileDescription() {
+        return fileDescription;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setFileDescription(String fileDescription) {
+        this.fileDescription = fileDescription;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getDateOfUpload() {
+        return dateOfUpload;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setDateOfUpload(String dateOfUpload) {
+        this.dateOfUpload = dateOfUpload;
     }
 
     public int getAge() {
@@ -60,12 +59,12 @@ public class User {
         this.age = age;
     }
 
-    public String getOccupation() {
-        return occupation;
+    public String getReportDescription() {
+        return reportDescription;
     }
 
-    public void setOccupation(String occupation) {
-        this.occupation = occupation;
+    public void setReportDescription(String reportDescription) {
+        this.reportDescription = reportDescription;
     }
 
     public String getFileName() {

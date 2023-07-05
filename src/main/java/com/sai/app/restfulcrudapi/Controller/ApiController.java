@@ -1,9 +1,9 @@
 package com.sai.app.restfulcrudapi.Controller;
 
 import com.sai.app.restfulcrudapi.Models.File;
-import com.sai.app.restfulcrudapi.Models.User;
+import com.sai.app.restfulcrudapi.Models.Ticket;
 import com.sai.app.restfulcrudapi.Repo.FileRepo;
-import com.sai.app.restfulcrudapi.Repo.UserRepo;
+import com.sai.app.restfulcrudapi.Repo.TicketRepo;
 import com.sai.app.restfulcrudapi.Service.FileService;
 import com.sai.app.restfulcrudapi.Payload.Response;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,13 +24,13 @@ import java.util.stream.Collectors;
 @RestController
 public class ApiController {
     @Autowired
-    private UserRepo userRepo;
+    private TicketRepo ticketRepo;
     private FileRepo fileRepo;
 
     private final FileService fileStorageService;
 
-    public ApiController(UserRepo userRepo, FileRepo fileRepo, FileService fileStorageService) {
-        this.userRepo = userRepo;
+    public ApiController(TicketRepo ticketRepo, FileRepo fileRepo, FileService fileStorageService) {
+        this.ticketRepo = ticketRepo;
         this.fileRepo = fileRepo;
         this.fileStorageService = fileStorageService;
     }
@@ -83,9 +83,9 @@ public class ApiController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + databaseFile.getFileName() + "\"")
                 .body(new ByteArrayResource(databaseFile.getData()));
     }
-    @GetMapping("/users")
-    public List<User> getUsers(){
-        return userRepo.findAll();
+    @GetMapping("/tickets")
+    public List<Ticket> getTickets(){
+        return ticketRepo.findAll();
     }
 
     @PostMapping(value = "/submitFile/{id}")
@@ -94,44 +94,46 @@ public class ApiController {
         File fileName = fileStorageService.storeFile(file);
 
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/download/")
+                .path("/"+id+"/")
                 .path(fileName.getFileName())
                 .toUriString();
 
-        User userFile = userRepo.findById(id).get();
-        userFile.setFileName(fileName.getFileName());
-        userFile.setFileType(fileName.getFileType());
-        userFile.setData(fileName.getData());
+        Ticket ticketFile = ticketRepo.findById(id).get();
+        ticketFile.setFileName(fileDownloadUri+fileName.getFileName());
+        ticketFile.setFileType(fileName.getFileType());
+        ticketFile.setData(fileName.getData());
         fileRepo.save(fileName);
         return "file "+ fileName.getFileName() +" saved";
     }
     @PostMapping(value = "/submit")
-    public String saveUser(@RequestBody User user){
-        userRepo.save(user);
-        return "user saved...";
+    public String saveTicket(@RequestBody Ticket ticket){
+        ticketRepo.save(ticket);
+
+        // insert here for route redirection
+        return "Ticket saved...";
 
     }
 
 
     @PutMapping(value = "/update/{id}")
-    public String updateUser(@PathVariable long id, @RequestBody User user){
-        User updatedUser = userRepo.findById(id).get();
-        updatedUser.setFirstName(user.getFirstName());
-        updatedUser.setLastName(user.getLastName());
-        updatedUser.setOccupation(user.getOccupation());
-        updatedUser.setAge(user.getAge());
-        userRepo.save(updatedUser);
+    public String updateTicket(@PathVariable long id, @RequestBody Ticket ticket){
+        Ticket updatedTicket = ticketRepo.findById(id).get();
+        updatedTicket.setFileDescription(ticket.getFileDescription());
+        updatedTicket.setDateOfUpload(ticket.getDateOfUpload());
+        updatedTicket.setReportDescription(ticket.getReportDescription());
+        updatedTicket.setAge(ticket.getAge());
+        ticketRepo.save(updatedTicket);
 
-        return "user information updated...";
+        return "Ticket information updated...";
     }
 
     @DeleteMapping("/delete/{id}")
-    public String deleteUser(@PathVariable long id)
+    public String deleteTicket(@PathVariable long id)
     {
-        User deleteUser = userRepo.findById(id).get();
-        userRepo.delete(deleteUser);
+        Ticket deleteTicket = ticketRepo.findById(id).get();
+        ticketRepo.delete(deleteTicket);
 
-        return "deleted user with id " + id;
+        return "Deleted ticket with id " + id;
 
     }
 
